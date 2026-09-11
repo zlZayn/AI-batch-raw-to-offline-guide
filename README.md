@@ -142,39 +142,13 @@ AI-batch-raw-to-offline-guide/
 
 ### 常用命令（uv 环境）
 
-```bash
-# 验证数据完整性（基于 Schema）—— 改 schema/data 后必跑
-uv run python scripts/schema_validator.py
-
-# 生成 HTML（Schema 驱动）
-uv run python generator/schema_generator.py
-
-# 导出 Excel
-uv run python scripts/export_xlsx.py
-
-# 数据结构分析（生成图表到 output/data_analysis/）
-uv run python scripts/analyze_data.py
-
-# 数据统计
-uv run python scripts/stats.py
-
-# 数据规范冒烟测试
-uv run pytest
-```
+常用命令（数据验证、生成、导出、分析、测试）见 [AGENTS.md](AGENTS.md)「常用命令」，与开发环境一致。
 
 **依赖：** Python 3.12+、项目含 pyproject.toml + uv.lock（推荐 `uv sync` 安装；或 `pip install jinja2 openpyxl`）
 
 ### 文档索引
 
-| 文档 | 路径 | 内容 | 适合谁看 |
-|------|------|------|---------|
-| **架构设计** | `docs/ARCHITECTURE.md` | 设计哲学、关键决策、数据流、契约 | 改架构/理解为什么时参考 |
-| **Schema 字段手册** | `docs/schema-fields.md` | 13 实体字段清单、引用关系、改字段影响路由 | 改 Schema/数据时参考 |
-| **AI 使用教程** | `docs/usage.md` | 换主题全流程、AI 工作规范、验证修复指南 | 想用 AI 生成新主题的人 |
-| **产品设计** | `docs/design.md` | 信息架构、数据关联关系、视觉设计规范 | AI 改样式时参考 |
-| **技术实现** | `docs/workflow.md` | 生成流水线、索引算法、前端路由/筛选/轮播 | AI 改功能时参考 |
-| **验证报告** | `VERIFICATION_REPORT.md` | Schema 系统验证方法、测试结果 | 关注可靠性的人 |
-| **变更日志** | `changelog.md` | Schema 版本演进、数据结构变更历史 | 关注历史的人 |
+完整文档索引（架构、字段手册、教程、设计与实现、验证、变更日志）见 [AGENTS.md](AGENTS.md)「文档地图」。
 
 ### 技术栈
 

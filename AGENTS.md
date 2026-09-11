@@ -24,6 +24,8 @@
 
 ## 文档地图
 - 用户教程 → [docs/usage.md](docs/usage.md)
+- 产品设计 → [docs/design.md](docs/design.md)
+- 技术实现 → [docs/workflow.md](docs/workflow.md)
 - 测试 → [tests/README.md](tests/README.md)
 - 验证报告 → [VERIFICATION_REPORT.md](VERIFICATION_REPORT.md)
 - 变更日志 → [changelog.md](changelog.md)
