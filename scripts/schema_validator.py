@@ -67,7 +67,9 @@ class SchemaValidator:
                 if "id" in item:
                     eid = item["id"]
                     if eid in self.lookup:
-                        duplicates.append(f"ID 重复: {eid} (在 {self.lookup[eid][0]} 和 {entity_type})")
+                        duplicates.append(
+                            f"ID 重复: {eid} (在 {self.lookup[eid][0]} 和 {entity_type})"
+                        )
                     else:
                         self.lookup[eid] = (entity_type, item)
 
@@ -170,15 +172,17 @@ class SchemaValidator:
                             continue
 
                         ref_type, ref_item = self.lookup[ref_id]
-                        backref_checks.append({
-                            "source_type": entity_type,
-                            "source_id": item.get("id"),
-                            "source_field": field_name,
-                            "target_type": ref_type,
-                            "target_id": ref_id,
-                            "backref_field": backref_field,
-                            "target_item": ref_item
-                        })
+                        backref_checks.append(
+                            {
+                                "source_type": entity_type,
+                                "source_id": item.get("id"),
+                                "source_field": field_name,
+                                "target_type": ref_type,
+                                "target_id": ref_id,
+                                "backref_field": backref_field,
+                                "target_item": ref_item,
+                            }
+                        )
 
         inconsistent = []
         for check in backref_checks:
@@ -234,7 +238,9 @@ class SchemaValidator:
                         type_errors.append(
                             f"{entity_type}/{item.get('id', 'unknown')}.{field_name} 应为字符串，实际是 {type(value).__name__}"
                         )
-                    elif expected_type == "number" and not isinstance(value, (int, float)):
+                    elif expected_type == "number" and not isinstance(
+                        value, (int, float)
+                    ):
                         type_errors.append(
                             f"{entity_type}/{item.get('id', 'unknown')}.{field_name} 应为数字，实际是 {type(value).__name__}"
                         )
@@ -249,7 +255,11 @@ class SchemaValidator:
 
                     # 枚举检查
                     enum_values = field_schema.get("enum")
-                    if enum_values and value in enum_values and value not in enum_values:
+                    if (
+                        enum_values
+                        and value in enum_values
+                        and value not in enum_values
+                    ):
                         type_errors.append(
                             f"{entity_type}/{item.get('id', 'unknown')}.{field_name} 值 {value} 不在允许范围内 {enum_values}"
                         )
@@ -301,6 +311,7 @@ def main():
     python scripts/schema_validator.py <path/to/data>
     """
     import sys
+
     data_dir = DEFAULT_DATA_DIR
     if len(sys.argv) > 1:
         data_dir = os.path.join(BASE_DIR, sys.argv[1])

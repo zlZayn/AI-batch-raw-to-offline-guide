@@ -43,9 +43,19 @@ class SchemaGenerator:
         # 旧版 _ENTITY_TYPES 顺序: attractions, shows, restaurants, dishes, tips, warnings, shortcuts, itineraries
         # 加上其他实体: meta, tags, reviews, opinions, preparations
         entity_order = [
-            "attractions", "shows", "restaurants", "dishes",
-            "tips", "warnings", "shortcuts", "itineraries",
-            "meta", "tags", "reviews", "opinions", "preparations"
+            "attractions",
+            "shows",
+            "restaurants",
+            "dishes",
+            "tips",
+            "warnings",
+            "shortcuts",
+            "itineraries",
+            "meta",
+            "tags",
+            "reviews",
+            "opinions",
+            "preparations",
         ]
 
         for entity_type in entity_order:
@@ -61,7 +71,16 @@ class SchemaGenerator:
     def build_maps(self):
         """构建 ID -> 对象 查找表（与旧版 generate_guide.py 逻辑一致）"""
         # 旧版 _ENTITY_TYPES = ["attractions", "shows", "restaurants", "dishes", "tips", "warnings", "shortcuts", "itineraries"]
-        entity_types = ["attractions", "shows", "restaurants", "dishes", "tips", "warnings", "shortcuts", "itineraries"]
+        entity_types = [
+            "attractions",
+            "shows",
+            "restaurants",
+            "dishes",
+            "tips",
+            "warnings",
+            "shortcuts",
+            "itineraries",
+        ]
 
         for entity_type in entity_types:
             if entity_type not in self.data:
@@ -85,7 +104,12 @@ class SchemaGenerator:
         # warnings 按 target_id 索引
         warnings_by_target = defaultdict(list)
         for w in self.data.get("warnings", {}).get("warnings", []):
-            for field in ("attraction_ids", "show_ids", "restaurant_ids", "shortcut_ids"):
+            for field in (
+                "attraction_ids",
+                "show_ids",
+                "restaurant_ids",
+                "shortcut_ids",
+            ):
                 for eid in w.get(field, []):
                     warnings_by_target[eid].append(w)
         self.maps["warnings_by_target"] = dict(warnings_by_target)
@@ -99,7 +123,8 @@ class SchemaGenerator:
         """构建 tag_index 和 zone_index（与旧版 generate_guide.py 逻辑一致）"""
         # 识别园区标签 ID
         zone_tag_ids = {
-            t["id"] for t in self.data.get("tags", {}).get("tags", [])
+            t["id"]
+            for t in self.data.get("tags", {}).get("tags", [])
             if t.get("category") == "zone"
         }
 
@@ -264,40 +289,43 @@ class SchemaGenerator:
         from collections import defaultdict
 
         # 初始化 backrefs，所有实体都有这四个字段
-        backrefs = defaultdict(lambda: {
-            "tips": [], "warnings": [], "reviews": [], "itineraries": []
-        })
+        backrefs = defaultdict(
+            lambda: {"tips": [], "warnings": [], "reviews": [], "itineraries": []}
+        )
 
         # 1. tips → attractions
         for tip in self.data.get("tips", {}).get("tips", []):
             for attr_id in tip.get("attraction_ids", []):
-                backrefs[attr_id]["tips"].append({
-                    "id": tip.get("id"),
-                    "title": tip.get("title", "")
-                })
+                backrefs[attr_id]["tips"].append(
+                    {"id": tip.get("id"), "title": tip.get("title", "")}
+                )
 
         # 2. warnings → 各实体 (从 warnings_by_target map 构建)
         # 注意：使用 self.maps 而不是 self.indexes，因为 maps 包含完整的 warning 对象
         warnings_by_target = self.maps.get("warnings_by_target", {})
         for entity_id, warnings in warnings_by_target.items():
             for w in warnings:
-                backrefs[entity_id]["warnings"].append({
-                    "id": w.get("id"),
-                    "content": w.get("content", ""),
-                    "severity": w.get("severity", "medium"),
-                    "category": w.get("category", ""),
-                    "alternative": w.get("alternative", ""),
-                })
+                backrefs[entity_id]["warnings"].append(
+                    {
+                        "id": w.get("id"),
+                        "content": w.get("content", ""),
+                        "severity": w.get("severity", "medium"),
+                        "category": w.get("category", ""),
+                        "alternative": w.get("alternative", ""),
+                    }
+                )
 
         # 3. reviews → 各实体 (从 reviews_by_target map 构建)
         reviews_by_target = self.maps.get("reviews_by_target", {})
         for target_id, reviews in reviews_by_target.items():
             for r in reviews:
-                backrefs[target_id]["reviews"].append({
-                    "id": r.get("id"),
-                    "title": r.get("title", ""),
-                    "rating": r.get("rating"),
-                })
+                backrefs[target_id]["reviews"].append(
+                    {
+                        "id": r.get("id"),
+                        "title": r.get("title", ""),
+                        "rating": r.get("rating"),
+                    }
+                )
 
         # 4. itineraries → 各实体
         for itin in self.data.get("itineraries", {}).get("itineraries", []):
@@ -334,29 +362,37 @@ class SchemaGenerator:
                 for sid in source_ids:
                     if sid not in alt_index:
                         alt_index[sid] = []
-                    alt_index[sid].append({
-                        "type": "warning",
-                        "entity_id": w.get("id"),
-                        "name": "",
-                        "reason": w.get("alternative"),
-                    })
+                    alt_index[sid].append(
+                        {
+                            "type": "warning",
+                            "entity_id": w.get("id"),
+                            "name": "",
+                            "reason": w.get("alternative"),
+                        }
+                    )
 
         # 2. 从 dishes 的 alternatives 构建
         for dish in self.data.get("dishes", {}).get("dishes", []):
             for alt in dish.get("alternatives", []):
                 if dish.get("id") not in alt_index:
                     alt_index[dish["id"]] = []
-                alt_index[dish["id"]].append({
-                    "type": "dish",
-                    "entity_id": alt.get("dish_id", ""),
-                    "name": "",
-                    "reason": alt.get("note", ""),
-                    "alt_type": alt.get("type", ""),
-                })
+                alt_index[dish["id"]].append(
+                    {
+                        "type": "dish",
+                        "entity_id": alt.get("dish_id", ""),
+                        "name": "",
+                        "reason": alt.get("note", ""),
+                        "alt_type": alt.get("type", ""),
+                    }
+                )
 
         return alt_index
 
-    def render_html(self, template_name: str = "guide_template.html", output_name: str = "guide.html"):
+    def render_html(
+        self,
+        template_name: str = "guide_template.html",
+        output_name: str = "guide.html",
+    ):
         """渲染 HTML"""
         # 构建与旧版兼容的 _indexes
         # 旧版模板期望: DATA._indexes 包含 tag_index, zone_index, backrefs, alternative_index
@@ -378,8 +414,12 @@ class SchemaGenerator:
         env = Environment(loader=FileSystemLoader(self.template_dir), autoescape=True)
         template = env.get_template(template_name)
 
-        data_blob = json.dumps(self.data, ensure_ascii=False, indent=None, separators=(",", ":"))
-        indexes_blob = json.dumps(self.indexes, ensure_ascii=False, indent=None, separators=(",", ":"))
+        data_blob = json.dumps(
+            self.data, ensure_ascii=False, indent=None, separators=(",", ":")
+        )
+        indexes_blob = json.dumps(
+            self.indexes, ensure_ascii=False, indent=None, separators=(",", ":")
+        )
 
         # 北京时间
         beijing_tz = timezone(timedelta(hours=8))
@@ -417,7 +457,11 @@ class SchemaGenerator:
                     json.dump(meta, f, ensure_ascii=False, indent=2)
                 print(f"已更新 meta.json last_updated → {today}")
 
-    def run(self, template_name: str = "guide_template.html", output_name: str = "guide.html"):
+    def run(
+        self,
+        template_name: str = "guide_template.html",
+        output_name: str = "guide.html",
+    ):
         """完整生成流程"""
         print("加载数据...")
         self.load_all_data()
@@ -440,9 +484,12 @@ class SchemaGenerator:
 def main():
     """命令行入口"""
     import argparse
+
     parser = argparse.ArgumentParser(description="Schema 驱动的 HTML 生成器")
     parser.add_argument("--data-dir", "-d", help="数据目录路径（默认: ./data）")
-    parser.add_argument("--template-dir", "-t", help="模板目录路径（默认: ./generator）")
+    parser.add_argument(
+        "--template-dir", "-t", help="模板目录路径（默认: ./generator）"
+    )
     parser.add_argument("--output-dir", "-o", help="输出目录路径（默认: ./output）")
     parser.add_argument("--template", default="guide_template.html", help="模板文件名")
     parser.add_argument("--output", default="guide.html", help="输出文件名")
