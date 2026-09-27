@@ -12,10 +12,13 @@
 - uv run python generator/schema_generator.py（生成 HTML）
 - uv run python scripts/stats.py · analyze_data.py · export_xlsx.py
 - uv run pytest（tests/ 冒烟测试）
+- uv run ruff check . — Lint（ruff 默认规则集，列宽默认 88）
+- uv run ruff format . — 格式化（`--check` 只看不改）
 
-## 验证快照（2026-08-28 实际跑过）
+## 验证快照（2026-09-27 实际跑过）
 - schema_validator: PASS（唯一ID 311 / 有效引用 779 / 双向链接 234）
 - pytest: 2 passed / 0 failed
+- Ruff: `check` 0 发现；`format --check` 全绿（全量格式化已落地）
 
 ## 活跃坑
 - output/ 被 .gitignore 排除，clone 后需先跑生成器

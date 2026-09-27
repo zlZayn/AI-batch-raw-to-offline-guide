@@ -1,7 +1,9 @@
 
 """v3 数据结构分析：字段覆盖率、值域、稀疏性、命名规范、数值统计。"""
 
-import json, os, math
+import json
+import math
+import os
 from collections import Counter, defaultdict
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
@@ -294,7 +296,7 @@ depth_counts = Counter()  # 标量 vs 嵌套
 for entity_key, data in entity_files:
     entities = data.get(entity_key, [])
     for e in entities:
-        for k, v in e.items():
+        for v in e.values():
             if v is None:
                 type_counts['null'] += 1
             elif isinstance(v, bool):
@@ -330,10 +332,10 @@ array_field_map = {
 
 for entity_key, data in entity_files:
     for e in data.get(entity_key, []):
-        for f in array_field_map:
+        for f, lengths in array_field_map.items():
             v = e.get(f)
             if isinstance(v, list):
-                array_field_map[f].append(len(v))
+                lengths.append(len(v))
 
 array_len_stats = {}
 for f, lengths in array_field_map.items():

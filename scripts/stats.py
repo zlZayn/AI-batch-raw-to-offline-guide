@@ -3,7 +3,9 @@ python scripts/stats.py
 python scripts/stats.py <path/to/data>
 """
 
-import json, os, sys
+import json
+import os
+import sys
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE, "data")
@@ -25,7 +27,7 @@ for fname in files:
     label = fname.replace(".json", "")
 
     if len(counts) == 1:
-        key = list(counts.keys())[0]
+        key = next(iter(counts))
         if key == label:
             print(f"  {label:20s} {n:>4}")
         else:

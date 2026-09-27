@@ -5,8 +5,7 @@ python scripts/schema_validator.py <path/to/data>
 
 import json
 import os
-from collections import defaultdict
-from typing import Dict, List, Any, Tuple
+from typing import Any
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -14,7 +13,7 @@ SCHEMA_PATH = os.path.join(BASE_DIR, "schema.json")
 
 
 class SchemaValidator:
-    def __init__(self, data_dir: str = None):
+    def __init__(self, data_dir: str | None = None):
         self.data_dir = data_dir or DEFAULT_DATA_DIR
         self.schema = self._load_schema()
         self.data = {}
@@ -23,7 +22,7 @@ class SchemaValidator:
         self.warnings = []
         self.stats = {}
 
-    def _load_schema(self) -> Dict:
+    def _load_schema(self) -> dict:
         with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
 
@@ -33,7 +32,7 @@ class SchemaValidator:
 
     def load_all_data(self):
         """加载所有数据文件"""
-        for entity_type in self.schema["entities"].keys():
+        for entity_type in self.schema["entities"]:
             filename = f"{entity_type}.json"
             filepath = os.path.join(self.data_dir, filename)
             if os.path.exists(filepath):
@@ -74,7 +73,7 @@ class SchemaValidator:
 
         return duplicates
 
-    def validate_all(self) -> Tuple[bool, List[str], List[str]]:
+    def validate_all(self) -> tuple[bool, list[str], list[str]]:
         """执行所有验证"""
         self.errors = []
         self.warnings = []
@@ -138,7 +137,7 @@ class SchemaValidator:
         else:
             self.stats["有效引用数"] = ref_count
 
-    def _check_ref_exists(self, ref_id: str, target_types: List[str]) -> bool:
+    def _check_ref_exists(self, ref_id: str, target_types: list[str]) -> bool:
         """检查引用是否存在"""
         if ref_id in self.lookup:
             actual_type = self.lookup[ref_id][0]
@@ -250,11 +249,10 @@ class SchemaValidator:
 
                     # 枚举检查
                     enum_values = field_schema.get("enum")
-                    if enum_values and value in enum_values:
-                        if value not in enum_values:
-                            type_errors.append(
-                                f"{entity_type}/{item.get('id', 'unknown')}.{field_name} 值 {value} 不在允许范围内 {enum_values}"
-                            )
+                    if enum_values and value in enum_values and value not in enum_values:
+                        type_errors.append(
+                            f"{entity_type}/{item.get('id', 'unknown')}.{field_name} 值 {value} 不在允许范围内 {enum_values}"
+                        )
 
         if type_errors:
             self.errors.extend(type_errors)
@@ -277,7 +275,7 @@ class SchemaValidator:
         if missing:
             self.errors.extend(missing)
 
-    def _get_items(self, entity_type: str) -> List[Dict]:
+    def _get_items(self, entity_type: str) -> list[dict]:
         """获取实体列表"""
         data_obj = self.data.get(entity_type, {})
 
@@ -292,7 +290,7 @@ class SchemaValidator:
         # 处理 tags 这种嵌套结构
         return data_obj.get(entity_type, [])
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """获取统计信息"""
         return self.stats
 

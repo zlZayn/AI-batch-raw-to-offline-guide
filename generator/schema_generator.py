@@ -6,7 +6,8 @@
 import json
 import os
 from collections import defaultdict
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
+
 from jinja2 import Environment, FileSystemLoader
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +18,7 @@ SCHEMA_PATH = os.path.join(BASE_DIR, "schema.json")
 
 
 class SchemaGenerator:
-    def __init__(self, data_dir: str = None):
+    def __init__(self, data_dir: str | None = None):
         self.schema = self._load_schema()
         self.data = {}
         self.maps = {}  # ID -> 对象映射
@@ -135,8 +136,7 @@ class SchemaGenerator:
         """从实体中提取所有 zone ID（兼容 zone_id 单值和 zone_ids 多值）"""
         if entity.get("zone_id"):
             yield entity["zone_id"]
-        for zid in entity.get("zone_ids", []):
-            yield zid
+        yield from entity.get("zone_ids", [])
 
     def _build_backref_index(self, config: dict) -> dict:
         """构建反向引用索引"""
@@ -175,7 +175,7 @@ class SchemaGenerator:
         if source.startswith("entities.*."):
             field_name = source.split(".")[-1]
 
-            for entity_type, config in self.schema["entities"].items():
+            for entity_type in self.schema["entities"]:
                 if entity_type not in self.data:
                     continue
 

@@ -28,3 +28,6 @@ screenshot.js
 # Temporary / AI generated
 -p/
 images/ChatGPT Image*
+
+# Lint / 格式化缓存
+.ruff_cache/

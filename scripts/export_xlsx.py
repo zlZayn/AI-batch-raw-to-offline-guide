@@ -1,9 +1,11 @@
 
 """将 v3 全部 JSON 数据导出为 xlsx，每个实体类型一个 sheet。"""
 
-import json, os
+import json
+import os
+
 from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
