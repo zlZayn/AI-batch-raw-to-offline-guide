@@ -6,6 +6,7 @@
 - 生成器手册 → [generator/README.md](generator/README.md)
 - 脚本手册 → [scripts/README.md](scripts/README.md)
 - 决策记录 → [.agents/notes/](.agents/notes/)
+- 双件分离：AGENTS.md 只写规则，README.md 只写是什么/怎么改
 
 ## 常用命令（uv 环境，真实可跑）
 - uv run python scripts/schema_validator.py（数据验证）
