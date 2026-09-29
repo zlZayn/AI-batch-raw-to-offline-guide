@@ -9,6 +9,8 @@
 - 双件分离：AGENTS.md 只写规则，README.md 只写是什么/怎么改
 
 ## 常用命令（uv 环境，真实可跑）
+
+- 本地钩子：`pre-commit install`（每个 clone 一次；本体 `uv tool install pre-commit`）——提交前自动 `ruff check --fix` + `ruff format`；CI 只读跑同一组检查（部署链仍在 static.yml）
 - uv run python scripts/schema_validator.py（数据验证）
 - uv run python generator/schema_generator.py（生成 HTML）
 - uv run python scripts/stats.py · analyze_data.py · export_xlsx.py
