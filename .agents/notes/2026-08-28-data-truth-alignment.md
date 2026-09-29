@@ -1,6 +1,6 @@
 # 决策：数据真相对齐与文档用法同步（2026-08-28）
 
-已实施：已实施
+状态：生效
 
 ## 问题
 - schema.json 声明字段落后于 data/*.json 实际字段：attractions 缺 5 个、reviews/opinions 缺 2 个
